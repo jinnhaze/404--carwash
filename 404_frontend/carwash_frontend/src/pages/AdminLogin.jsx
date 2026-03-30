@@ -30,8 +30,6 @@ const AdminLogin = () => {
 
       if (response.data.access || response.data.token) {
         localStorage.setItem('adminToken', response.data.access || response.data.token);
-        // We will separate the storage tokens later if true IAM is implemented.
-        localStorage.setItem('token', response.data.access || response.data.token);
         window.location.href = '/admin-dashboard';
       }
     } catch (err) {

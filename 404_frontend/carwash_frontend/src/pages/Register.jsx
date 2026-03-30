@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, Lock, Menu, Droplets, Gauge, ShieldCheck, ArrowRight } from 'lucide-react';
 import API from '../api/axios';
+import SpinnerOverlay from '../components/SpinnerOverlay';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ const Register = () => {
       setSuccess(true);
       setTimeout(() => {
         window.location.href = '/';
-      }, 2000);
+      }, 1500);
     } catch (err) {
       if (err.response?.data) {
         // extract all error arrays into a clean string, e.g. {"email": ["Taken"], "phone": ["Taken"]}
@@ -57,21 +58,22 @@ const Register = () => {
       } else {
         setError('An unexpected error occurred.');
       }
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col overflow-x-hidden font-sans bg-[#181611] text-slate-100">
+    <>
+    <SpinnerOverlay isVisible={loading} />
+    <div className="relative min-h-screen w-full flex flex-col overflow-x-hidden font-sans bg-[#000000] text-slate-100">
       <div 
         className="absolute inset-0 z-0 opacity-20 mix-blend-overlay grayscale bg-center bg-cover"
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&q=80')" }}
       />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#181611]/80 via-[#181611]/95 to-[#181611]" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#000000]/80 via-[#000000]/95 to-[#000000]" />
 
       <div className="relative z-10 flex flex-col grow">
-        <header className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#393528]">
+        <header className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#2a2a2a]">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 text-[#f3c316]">
               <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -80,10 +82,10 @@ const Register = () => {
               </svg>
             </div>
             <h2 className="text-xl font-black italic tracking-tighter uppercase">
-              404 <span className="text-[#f3c316]">Car Wash</span>
+              404 <span className="text-[#f3c316]">Carwash</span>
             </h2>
           </div>
-          <button className="flex items-center justify-center rounded-md h-10 w-10 bg-[#27251b] border border-[#393528]">
+          <button className="flex items-center justify-center rounded-md h-10 w-10 bg-[#111111] border border-[#2a2a2a]">
             <Menu size={20} />
           </button>
         </header>
@@ -98,7 +100,7 @@ const Register = () => {
             </p>
           </div>
 
-          <div className="w-full max-w-md bg-[#27251b]/80 backdrop-blur-md border border-[#393528] p-8 rounded-xl shadow-2xl mb-8">
+          <div className="w-full max-w-md bg-[#111111]/80 backdrop-blur-md border border-[#2a2a2a] p-8 rounded-xl shadow-2xl mb-8">
             <div className="mb-6">
               <h3 className="text-2xl font-bold">Create Account</h3>
             </div>
@@ -114,7 +116,7 @@ const Register = () => {
                   <input 
                     type="text" name="username" value={formData.username} onChange={handleChange} required
                     placeholder="johndoe123"
-                    className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
+                    className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
                   />
                 </div>
               </div>
@@ -126,7 +128,7 @@ const Register = () => {
                   <input 
                     type="email" name="email" value={formData.email} onChange={handleChange} required
                     placeholder="john@example.com"
-                    className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
+                    className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
                   />
                 </div>
               </div>
@@ -138,7 +140,7 @@ const Register = () => {
                   <input 
                     type="tel" name="phone" value={formData.phone} onChange={handleChange} required
                     placeholder="+1 (555) 000-0000"
-                    className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
+                    className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
                   />
                 </div>
               </div>
@@ -150,7 +152,7 @@ const Register = () => {
                   <input 
                     type="password" name="password" value={formData.password} onChange={handleChange} required
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
+                    className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-600"
                   />
                 </div>
               </div>
@@ -158,13 +160,13 @@ const Register = () => {
               <button 
                 type="submit"
                 disabled={loading || success}
-                className="w-full mt-2 bg-[#f3c316] hover:bg-[#d9ae14] disabled:bg-slate-700 text-[#181611] font-black py-4 rounded-lg transition-transform active:scale-[0.98] uppercase tracking-widest text-sm shadow-lg shadow-[#f3c316]/20 flex items-center justify-center gap-2"
+                className="w-full mt-2 bg-[#f3c316] hover:bg-[#d9ae14] disabled:bg-slate-700 text-[#000000] font-black py-4 rounded-lg transition-transform active:scale-[0.98] uppercase tracking-widest text-sm shadow-lg shadow-[#f3c316]/20 flex items-center justify-center gap-2"
               >
                 {loading ? 'Creating...' : success ? 'Success!' : <>Register <ArrowRight size={16} /></>}
               </button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-[#393528] text-center">
+            <div className="mt-8 pt-6 border-t border-[#2a2a2a] text-center">
               <p className="text-slate-400 text-sm">
                 Already have an account? 
                 <a href="/" className="text-[#f3c316] font-bold hover:underline ml-1">Sign In</a>
@@ -174,6 +176,7 @@ const Register = () => {
         </main>
       </div>
     </div>
+    </>
   );
 };
 

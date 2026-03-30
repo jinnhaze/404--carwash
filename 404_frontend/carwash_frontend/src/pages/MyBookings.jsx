@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { ArrowLeft, RefreshCw, CalendarCheck } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import API from "../api/axios";
@@ -51,11 +51,11 @@ const MyBookings = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col font-sans bg-[#181611] text-slate-100">
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#181611]/80 via-[#181611]/95 to-[#181611]" />
+    <div className="relative min-h-screen w-full flex flex-col font-sans bg-[#000000] text-slate-100">
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#000000]/80 via-[#000000]/95 to-[#000000]" />
 
       <div className="relative z-10 flex flex-col grow">
-        <header className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#393528]">
+        <header className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#2a2a2a]">
           <a href="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-[#f3c316] transition-colors">
             <ArrowLeft size={20} />
             <span className="text-xs font-bold uppercase tracking-widest">Back to Garage</span>
@@ -63,7 +63,7 @@ const MyBookings = () => {
           <button 
             onClick={fetchAllData}
             title="Refresh Bookings"
-            className="p-2 bg-[#27251b] border border-[#393528] rounded-md hover:text-[#f3c316] transition-colors"
+            className="p-2 bg-[#111111] border border-[#2a2a2a] rounded-md hover:text-[#f3c316] transition-colors"
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
           </button>
@@ -84,12 +84,12 @@ const MyBookings = () => {
               Fetching your records...
             </div>
           ) : displayedBookings.length === 0 ? (
-            <div className="py-20 border-2 border-dashed border-[#393528] rounded-2xl text-center bg-[#27251b]/30">
+            <div className="py-20 border-2 border-dashed border-[#2a2a2a] rounded-2xl text-center bg-[#111111]/30">
               <CalendarCheck className="mx-auto text-slate-700 mb-4" size={48} />
               <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
                 {vehicleIdFilter ? "No bookings found for this specific vehicle" : "No bookings found"}
               </p>
-              <a href="/services" className="mt-4 inline-block bg-[#f3c316]/10 text-[#f3c316] px-6 py-2 rounded font-bold uppercase tracking-widest text-xs hover:bg-[#f3c316] hover:text-[#181611] transition-all">
+              <a href="/services" className="mt-4 inline-block bg-[#f3c316]/10 text-[#f3c316] px-6 py-2 rounded font-bold uppercase tracking-widest text-xs hover:bg-[#f3c316] hover:text-[#000000] transition-all">
                 Book a Wash
               </a>
             </div>

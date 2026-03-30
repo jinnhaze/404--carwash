@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ServiceListView,TimeSlotListView
+from .views import ServiceListView, TimeSlotListView
 
 urlpatterns = [
     path('', ServiceListView.as_view()),

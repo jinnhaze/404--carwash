@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Car, Hash, Palette, ArrowLeft, Save } from 'lucide-react';
 import API from '../api/axios';
 
@@ -7,16 +7,24 @@ const AddVehicle = () => {
     car_name: '',
     model: '',
     color: '',
-    number_plate: ''
+    number_plate: '',
+    image: null
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    if (e.target.name === 'image') {
+      setFormData({
+        ...formData,
+        image: e.target.files[0]
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -25,7 +33,20 @@ const AddVehicle = () => {
     setError('');
 
     try {
-      await API.post('vehicles/add/', formData);
+      const data = new FormData();
+      data.append('car_name', formData.car_name);
+      data.append('model', formData.model);
+      data.append('color', formData.color);
+      data.append('number_plate', formData.number_plate);
+      if (formData.image) {
+        data.append('image', formData.image);
+      }
+
+      await API.post('vehicles/add/', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       window.location.href = '/dashboard';
     } catch (err) {
       if (err.response?.data) {
@@ -40,11 +61,11 @@ const AddVehicle = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col overflow-x-hidden font-sans bg-[#181611] text-slate-100">
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#181611]/80 via-[#181611]/95 to-[#181611]" />
+    <div className="relative min-h-screen w-full flex flex-col overflow-x-hidden font-sans bg-[#000000] text-slate-100">
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#000000]/80 via-[#000000]/95 to-[#000000]" />
 
       <div className="relative z-10 flex flex-col grow">
-        <header className="flex items-center px-6 md:px-10 py-4 border-b border-[#393528]">
+        <header className="flex items-center px-6 md:px-10 py-4 border-b border-[#2a2a2a]">
           <a href="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-[#f3c316] transition-colors">
             <ArrowLeft size={20} />
             <span className="text-xs font-bold uppercase tracking-widest">Back to Garage</span>
@@ -61,7 +82,7 @@ const AddVehicle = () => {
             </p>
           </div>
 
-          <div className="w-full max-w-2xl bg-[#27251b]/80 backdrop-blur-md border border-[#393528] p-8 rounded-xl shadow-2xl">
+          <div className="w-full max-w-2xl bg-[#111111]/80 backdrop-blur-md border border-[#2a2a2a] p-8 rounded-xl shadow-2xl">
             {error && (
               <div className="mb-6 p-3 bg-red-500/10 border border-red-500/50 text-red-500 text-xs rounded uppercase font-bold tracking-widest text-center">
                 {error}
@@ -77,7 +98,7 @@ const AddVehicle = () => {
                     <input 
                       type="text" name="car_name" required value={formData.car_name} onChange={handleChange}
                       placeholder="e.g. BMW"
-                      className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700"
+                      className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700"
                     />
                   </div>
                 </div>
@@ -88,7 +109,7 @@ const AddVehicle = () => {
                     <input 
                       type="text" name="model" required value={formData.model} onChange={handleChange}
                       placeholder="e.g. M4"
-                      className="w-full px-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700"
+                      className="w-full px-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700"
                     />
                   </div>
                 </div>
@@ -100,7 +121,7 @@ const AddVehicle = () => {
                     <input 
                       type="text" name="color" required value={formData.color} onChange={handleChange}
                       placeholder="e.g. Matte Black"
-                      className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700"
+                      className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700"
                     />
                   </div>
                 </div>
@@ -112,7 +133,17 @@ const AddVehicle = () => {
                     <input 
                       type="text" name="number_plate" required value={formData.number_plate} onChange={handleChange}
                       placeholder="KL-01-AB-1234"
-                      className="w-full pl-12 pr-4 py-3 bg-[#181611] border border-[#393528] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700 uppercase"
+                      className="w-full pl-12 pr-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all placeholder:text-slate-700 uppercase"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Vehicle Photo</label>
+                  <div className="relative group">
+                    <input 
+                      type="file" name="image" accept="image/*" onChange={handleChange}
+                      className="w-full px-4 py-3 bg-[#000000] border border-[#2a2a2a] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3c316]/50 focus:border-[#f3c316] transition-all file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#f3c316] file:text-[#000000] hover:file:bg-[#d9ae14]"
                     />
                   </div>
                 </div>
@@ -121,7 +152,7 @@ const AddVehicle = () => {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full mt-4 bg-[#f3c316] hover:bg-[#d9ae14] disabled:bg-slate-700 text-[#181611] font-black py-4 rounded-lg transition-transform active:scale-[0.98] uppercase tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#f3c316]/20"
+                className="w-full mt-4 bg-[#f3c316] hover:bg-[#d9ae14] disabled:bg-slate-700 text-[#000000] font-black py-4 rounded-lg transition-transform active:scale-[0.98] uppercase tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#f3c316]/20"
               >
                 {loading ? 'Adding to Garage...' : <><Save size={18} /> Save Vehicle Information</>}
               </button>

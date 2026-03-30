@@ -4,8 +4,8 @@ import API from "../api/axios";
 
 function BookingCard({ booking, services, vehicles, cancel, refresh }) {
   // Find related data
-  const service = services.find(s => s.id === booking.service);
   const vehicle = vehicles.find(v => v.id === booking.vehicle);
+  const bookingServices = services.filter(s => booking.services.includes(s.id));
 
   // Status Colors & Icons
   const getStatusDisplay = (status) => {
@@ -26,7 +26,7 @@ function BookingCard({ booking, services, vehicles, cancel, refresh }) {
   const handlePayment = async () => {
     setPaying(true);
     try {
-      await API.post(`bookings/pay/${booking.id}/`, { amount: servicePrice });
+      await API.post(`bookings/pay/${booking.id}/`, { amount: booking.total_price });
       alert("Payment successful!");
       if (refresh) refresh();
     } catch (err) {
@@ -40,14 +40,13 @@ function BookingCard({ booking, services, vehicles, cancel, refresh }) {
   const StatusIcon = statusStyle.icon;
 
   // Render variables safely
-  const serviceName = service ? service.name : booking.service_name || "Unknown Service";
-  const servicePrice = service ? service.price : "N/A";
-  const duration = service ? service.duration : "N/A";
+  const serviceNames = booking.service_names || (bookingServices.length > 0 ? bookingServices.map(s => s.name).join(', ') : "Unknown Service");
+  const totalPrice = booking.total_price || (bookingServices.length > 0 ? bookingServices.reduce((sum, s) => sum + parseFloat(s.price), 0) : "N/A");
   const vehicleName = vehicle ? `${vehicle.car_name} ${vehicle.model}` : "Unknown Vehicle";
   const vehiclePlate = vehicle ? vehicle.number_plate : booking.vehicle_number || "N/A";
 
   return (
-    <div className="bg-[#27251b] border border-[#393528] rounded-xl overflow-hidden group hover:border-[#f3c316]/40 transition-all flex flex-col relative">
+    <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl overflow-hidden group hover:border-[#f3c316]/40 transition-all flex flex-col relative">
       <div className="p-6 grow space-y-4">
         {/* Header / Status Badge */}
         <div className="flex justify-between items-start mb-2">
@@ -73,15 +72,22 @@ function BookingCard({ booking, services, vehicles, cancel, refresh }) {
         </div>
 
         <div>
-          <h3 className="text-xl font-black uppercase tracking-tight text-white mb-1">{serviceName}</h3>
+          <h3 className="text-xl font-black uppercase tracking-tight text-white mb-1">{serviceNames}</h3>
           <p className="text-[#f3c316] font-bold text-lg flex items-center">
-            <DollarSign size={16} />{servicePrice}
+            <DollarSign size={16} />{totalPrice}
           </p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {bookingServices.map(s => (
+              <span key={s.id} className="text-[8px] font-bold uppercase bg-[#000000] px-2 py-0.5 rounded border border-[#2a2a2a] text-slate-400">
+                {s.name}
+              </span>
+            ))}
+          </div>
         </div>
 
-        <div className="space-y-2 pt-4 border-t border-[#393528]">
+        <div className="space-y-2 pt-4 border-t border-[#2a2a2a]">
           <div className="flex items-center gap-3 text-sm text-slate-300">
-            <div className="w-6 h-6 rounded bg-[#181611] flex items-center justify-center text-[#f3c316]">
+            <div className="w-6 h-6 rounded bg-[#000000] flex items-center justify-center text-[#f3c316]">
               <Car size={12} />
             </div>
             <div>
@@ -91,7 +97,7 @@ function BookingCard({ booking, services, vehicles, cancel, refresh }) {
           </div>
 
           <div className="flex items-center gap-3 text-sm text-slate-300">
-            <div className="w-6 h-6 rounded bg-[#181611] flex items-center justify-center text-[#f3c316]">
+            <div className="w-6 h-6 rounded bg-[#000000] flex items-center justify-center text-[#f3c316]">
               <Calendar size={12} />
             </div>
             <div>
@@ -101,28 +107,68 @@ function BookingCard({ booking, services, vehicles, cancel, refresh }) {
           </div>
 
           <div className="flex items-center gap-3 text-sm text-slate-300">
-            <div className="w-6 h-6 rounded bg-[#181611] flex items-center justify-center text-[#f3c316]">
+            <div className="w-6 h-6 rounded bg-[#000000] flex items-center justify-center text-[#f3c316]">
               <Clock size={12} />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Est. Duration</p>
-              <p className="font-bold text-white">{duration}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Selected Services</p>
+              <p className="font-bold text-white">{bookingServices.length} Items</p>
             </div>
           </div>
         </div>
+        
+        {/* Progress Bar Container within BookingCard */}
+        {booking.status !== 'cancelled' && (
+          <div className="mt-4 pt-4 border-t border-[#2a2a2a] w-full">
+            <div className="flex justify-between items-end mb-2">
+              <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Washing Progress</p>
+              <p className="text-[10px] font-black text-[#f3c316] uppercase tracking-widest">
+                {booking.status.replace('_', ' ')}
+              </p>
+            </div>
+            <div className="h-1.5 w-full bg-[#1a1a1a] rounded-full overflow-hidden flex gap-0.5 p-0.5">
+              {(() => {
+                const steps = [
+                  'pending', 'confirmed', 'queued', 'pre_wash', 
+                  'washing', 'detailing', 'waxing', 'inspection_final', 
+                  'ready', 'completed'
+                ];
+                let currIdx = steps.indexOf(booking.status);
+                // Fallback for missing/other statuses
+                if (currIdx === -1 && booking.status === 'pickup_scheduled') currIdx = 0;
+                if (currIdx === -1 && booking.status === 'picked_up') currIdx = 1;
+                if (currIdx === -1 && booking.status === 'coating') currIdx = 6;
+                
+                return steps.map((s, idx) => (
+                  <div 
+                    key={s} 
+                    className={`h-full flex-1 rounded-full transition-all duration-700
+                      ${idx <= currIdx 
+                        ? 'bg-[#f3c316] shadow-[0_0_10px_rgba(243,195,22,0.4)]' 
+                        : 'bg-[#2a2a2a]'}`}
+                  />
+                ));
+              })()}
+            </div>
+            
+            <p className="text-[9px] text-slate-600 mt-2 uppercase font-bold text-center">
+              Stage { (() => {
+                const steps = [
+                  'pending', 'confirmed', 'queued', 'pre_wash', 'washing', 'detailing', 'waxing', 'inspection_final', 'ready', 'completed'
+                ];
+                let idx = steps.indexOf(booking.status);
+                if (idx === -1 && booking.status === 'pickup_scheduled') idx = 0;
+                if (idx === -1 && booking.status === 'picked_up') idx = 1;
+                if (idx === -1 && booking.status === 'coating') idx = 6;
+                return idx + 1 > 0 ? idx + 1 : 1;
+              })()} of 10
+            </p>
+          </div>
+        )}
       </div>
 
-      {booking.status !== 'cancelled' && booking.status !== 'completed' && (
-        <div className="p-4 bg-[#181611] border-t border-[#393528] space-y-2">
-          {booking.is_approved && booking.payment_status !== 'completed' && (
-            <button 
-              onClick={handlePayment}
-              disabled={paying}
-              className="w-full py-3 rounded-lg border border-green-500 text-green-500 hover:bg-green-500 hover:text-black disabled:opacity-50 text-xs font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-            >
-              <Wallet size={14} /> {paying ? 'Processing...' : `Pay dummy amount (₹${servicePrice})`}
-            </button>
-          )}
+      {booking.status === 'pending' && (
+        <div className="p-4 bg-[#000000] border-t border-[#2a2a2a] space-y-2">
           <button 
             onClick={() => cancel(booking.id)}
             className="w-full py-3 rounded-lg border border-red-500/20 text-red-500 hover:bg-red-500/10 text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2"

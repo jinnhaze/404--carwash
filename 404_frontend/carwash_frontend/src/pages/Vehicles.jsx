@@ -1,6 +1,6 @@
 import {useEffect,useState} from "react"
 import API from "../api/axios"
-import Navbar from "../components/Navbar"
+
 import VehicleCard from "../components/VehicleCard"
 
 function Vehicles(){
@@ -18,7 +18,7 @@ return(
 
 <div>
 
-<Navbar/>
+
 
 <div className="container">
 

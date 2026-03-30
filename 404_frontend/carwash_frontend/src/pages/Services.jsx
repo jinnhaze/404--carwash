@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { ArrowLeft, Clock, DollarSign, CheckCircle2, Droplets } from "lucide-react";
 import API from "../api/axios";
 
@@ -23,11 +23,11 @@ const Services = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col font-sans bg-[#181611] text-slate-100">
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#181611]/80 via-[#181611]/95 to-[#181611]" />
+    <div className="relative min-h-screen w-full flex flex-col font-sans bg-[#000000] text-slate-100">
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#000000]/80 via-[#000000]/95 to-[#000000]" />
 
       <div className="relative z-10 flex flex-col grow">
-        <header className="flex items-center px-6 md:px-10 py-4 border-b border-[#393528]">
+        <header className="flex items-center px-6 md:px-10 py-4 border-b border-[#2a2a2a]">
           <a href="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-[#f3c316] transition-colors">
             <ArrowLeft size={20} />
             <span className="text-xs font-bold uppercase tracking-widest">Back to Garage</span>
@@ -51,9 +51,9 @@ const Services = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map(service => (
-                <div key={service.id} className="bg-[#27251b] border border-[#393528] rounded-xl overflow-hidden group hover:border-[#f3c316]/50 transition-all flex flex-col">
+                <div key={service.id} className="bg-[#111111] border border-[#2a2a2a] rounded-xl overflow-hidden group hover:border-[#f3c316]/50 transition-all flex flex-col">
                   <div className="p-8 grow">
-                    <div className="w-12 h-12 rounded-lg bg-[#181611] text-[#f3c316] flex items-center justify-center mb-6">
+                    <div className="w-12 h-12 rounded-lg bg-[#000000] text-[#f3c316] flex items-center justify-center mb-6">
                       <Droplets size={24} />
                     </div>
                     
@@ -75,7 +75,7 @@ const Services = () => {
                       </div>
                     </div>
                     
-                    <div className="space-y-4 pt-6 border-t border-[#393528]">
+                    <div className="space-y-4 pt-6 border-t border-[#2a2a2a]">
                       {(service.features || ["Interior Vacuum", "Exterior Wash", "Tire Shine"]).map((feature, idx) => (
                         <div key={idx} className="flex items-center gap-3 text-sm text-slate-300">
                           <CheckCircle2 size={16} className="text-[#f3c316] flex-shrink-0" />
@@ -88,7 +88,7 @@ const Services = () => {
                   <div className="p-6 pt-0 mt-auto">
                     <button 
                       onClick={() => bookService(service.id)}
-                      className="w-full bg-[#f3c316] hover:bg-[#d9ae14] text-[#181611] font-black py-4 rounded-lg transition-transform active:scale-[0.98] uppercase tracking-widest text-sm shadow-lg shadow-[#f3c316]/20"
+                      className="w-full bg-[#f3c316] hover:bg-[#d9ae14] text-[#000000] font-black py-4 rounded-lg transition-transform active:scale-[0.98] uppercase tracking-widest text-sm shadow-lg shadow-[#f3c316]/20"
                     >
                       Select Package
                     </button>

@@ -17,3 +17,11 @@ class MyVehiclesView(generics.ListAPIView):
 
     def get_queryset(self):
         return Vehicle.objects.filter(user=self.request.user)
+
+
+class DeleteVehicleView(generics.DestroyAPIView):
+    serializer_class = VehicleSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Vehicle.objects.filter(user=self.request.user)
